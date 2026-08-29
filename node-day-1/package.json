@@ -1,0 +1,14 @@
+{
+    "scripts": {
+        "dev": "node --watch server.js"
+    },
+    "dependencies": {
+        "dotenv": "^17.4.2",
+        "express": "^5.2.1",
+        "module-alias": "^2.3.4",
+        "mysql2": "^3.24.2"
+    },
+    "_moduleAliases": {
+        "@": "./src"
+    }
+}
