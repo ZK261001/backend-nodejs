@@ -2,16 +2,20 @@ const pool = require("@/config/database");
 
 class Post {
     async findAll(limit, offset, condition = {}) {
-        const queryStr = Object.entries(condition)
-            .filter(([_, value]) => value === void 0)
-            .map(([key, value]) => {
-                value = typeof value === "number" ? value : `"${value}"`;
-                return `${key}=${value}`;
-            })
-            .join(" and ");
-        const [rows] = await pool.query(
-            `SELECT * FROM posts ${queryStr ? `where ${queryStr}` : ""}  limit ${limit} offset ${offset} `,
+        const filters = Object.entries(condition).filter(
+            ([, value]) => value !== undefined && value !== null,
         );
+
+        const whereClause = filters.length
+            ? `WHERE ${filters.map(([key]) => `${key} = ?`).join(" AND ")}`
+            : "";
+        const params = filters.map(([, value]) => value);
+
+        const [rows] = await pool.query(
+            `SELECT * FROM posts ${whereClause} LIMIT ? OFFSET ?`,
+            [...params, limit, offset],
+        );
+
         return rows;
     }
 
