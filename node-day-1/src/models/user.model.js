@@ -20,10 +20,10 @@ class User {
         return rows[0];
     }
 
-    async findByEmailAndPassword(email, password) {
+    async findByEmail(email) {
         const [rows] = await pool.query(
-            `SELECT id, email, first_name, last_name FROM users WHERE email = ? and password = ?`,
-            [email, password],
+            `SELECT id, email, first_name, last_name, password FROM users WHERE email = ?`,
+            [email],
         );
         return rows[0];
     }
@@ -34,6 +34,23 @@ class User {
         );
 
         return insertId;
+    }
+
+    async updateRefreshToken(id, token, ttl) {
+        const [{ affectedRows }] = await pool.query(
+            `update users set refresh_token = ?, refresh_expires_at = ? where id = ?`,
+            [token, ttl, id],
+        );
+
+        return affectedRows;
+    }
+
+    async findByRefreshToken(token) {
+        const [rows] = await pool.query(
+            `SELECT * FROM users where refresh_token = ? and refresh_expires_at >= now()`,
+            [token],
+        );
+        return rows[0];
     }
 }
 
