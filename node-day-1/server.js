@@ -22,21 +22,6 @@ app.use(express.json());
 
 app.use(response);
 
-// Middleware áp dụng cho mọi request
-// app.use(() => {
-//     // ...
-// });
-
-// // Middleware áp dụng cho mọi request GET
-// app.get(() => {
-//     // ...
-// });
-
-// // Middleware áp dụng cho mọi request POST /xyz
-// app.post("/xyz", () => {
-//     // ...
-// });
-
 app.use("/api", rootRouter);
 
 app.use(notFound);

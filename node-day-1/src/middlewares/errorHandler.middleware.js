@@ -1,12 +1,22 @@
+const { HTTP_STATUS, ERROR_MESSAGES } = require("@/config/constants");
+
 const { JsonWebTokenError } = require("jsonwebtoken");
 
 const errorHandler = (err, req, res, next) => {
-    let status;
+    let status = HTTP_STATUS.INTERNAL_SERVER_ERROR;
+    let errorMessage = err.message || String(err);
+
     if (err instanceof JsonWebTokenError) {
-        err = "Unauthorized";
-        status = 401;
+        errorMessage = ERROR_MESSAGES.UNAUTHORIZED;
+        status = HTTP_STATUS.UNAUTHORIZED;
     }
-    res.error({ message: String(err) }, status);
+
+    if (errorMessage.includes("users.uq_users_email")) {
+        errorMessage = ERROR_MESSAGES.UNAUTHORIZED;
+        status = HTTP_STATUS.UNAUTHORIZED;
+    }
+
+    res.error({ message: errorMessage }, status);
 };
 
 module.exports = errorHandler;
