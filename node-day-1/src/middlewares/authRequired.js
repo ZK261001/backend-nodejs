@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { secret } = require("@/config/jwt");
+const { authSecret } = require("@/config/jwt");
 const userModel = require("@/models/user.model");
 
 const authRequired = async (req, res, next) => {
@@ -7,7 +7,7 @@ const authRequired = async (req, res, next) => {
         ?.replace("Bearer", "")
         .trim();
 
-    const payload = jwt.verify(access_token, secret);
+    const payload = jwt.verify(access_token, authSecret);
 
     // Check exp
     if (payload.exp * 1000 < Date.now()) {

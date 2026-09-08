@@ -11,11 +11,6 @@ const errorHandler = (err, req, res, next) => {
         status = HTTP_STATUS.UNAUTHORIZED;
     }
 
-    if (errorMessage.includes("users.uq_users_email")) {
-        errorMessage = ERROR_MESSAGES.UNAUTHORIZED;
-        status = HTTP_STATUS.UNAUTHORIZED;
-    }
-
     res.error({ message: errorMessage }, status);
 };
 
