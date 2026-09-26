@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const strings = require("@/utils/strings");
 const { HTTP_STATUS } = require("@/config/constants");
 const emailService = require("@/services/email.service");
+const queueService = require("@/services/queue.service");
 const saltRounds = 10;
 
 const register = async (req, res) => {
@@ -21,7 +22,16 @@ const register = async (req, res) => {
         };
 
         // Send verified email
-        await emailService.sendVerifyEmail(newUser);
+        // await emailService.sendVerifyEmail(newUser);
+
+        // Hàng đợi (queue)
+        // Worker: [người 1, người 2, người 3, ...]
+        // DB: queues: id, type, payload, status = pending, inprogress, completed, failed, created_at, updated_at
+        queueService.push({
+            type: "sendVerifyEmail",
+            payload: newUser,
+        });
+        // .catch((err) => console.error("queueService.push failed:", err));
 
         res.success(newUser, 201);
     } catch (error) {
@@ -115,7 +125,11 @@ const resendVerifyEmail = async (req, res) => {
     if (req.user.verified_at) {
         res.error("Tai khoan da duoc xac minh", 400);
     }
-    emailService.sendVerifyEmail(req.user);
+    // emailService.sendVerifyEmail(req.user);
+    queueService.push({
+        type: "sendVerifyEmail",
+        payload: req.user,
+    });
     res.success("Resend verify email success");
 };
 
