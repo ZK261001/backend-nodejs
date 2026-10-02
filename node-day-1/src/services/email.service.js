@@ -35,6 +35,17 @@ class EmailService {
             throw error;
         }
     }
+    async sendReportEmail(email, subject, userCount) {
+        const info = await transporter.sendMail({
+            from: '"Daily-Korean" <luuthehuy2610@gmail.com>', // sender address
+            to: email,
+            subject,
+            html: `<h1>Báo cáo hằng ngày</h1>
+                <p>Người dùng đăng ký mới: ${userCount}</p>
+            `,
+        });
+        return info;
+    }
 }
 
 module.exports = new EmailService();

@@ -1,6 +1,8 @@
 require("dotenv").config();
 
 require("module-alias/register");
+
+require("@/config/database");
 const tasks = require("./src/tasks");
 
 console.log(tasks);
@@ -8,8 +10,6 @@ console.log(tasks);
 const constants = require("@/config/constants");
 const queueModel = require("@/models/queue.model");
 const sleep = require("@/utils/sleep.js");
-
-require("@/config/database");
 
 (async () => {
     while (true) {
